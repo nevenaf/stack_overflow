@@ -170,22 +170,10 @@ div#notebook {
 <p><strong>Reasoning:</strong> It is reasonable to assume that a more distinguished user and/or a question on a &quot;hot&quot; topic may generate more interest. We want to verify this assumption, to test if we can use this information, which is available at the time when a question is posted, to predict the interest in the question.</p>
 <p><strong>Data source:</strong> Stack Overflow has an SQL based data explorer <a href="https://data.stackexchange.com/stackoverflow/queries">online</a>.</p>
 <ul>
-<li>Popular tags: first we count the number of post with a  a given tag. Popularity of an area of interest may change. Therefore, we only assess posts within certain time bounds.</li>
+<li>We only retrive posts from a certain time period.</li>
 </ul>
 <pre><code>declare @startTime date = &#39;2015-08-01&#39;
 declare @endTime date =&#39;2015-10-01&#39;
-
-create table #Tags_Count (tagId int, tagCount int)
-insert #Tags_Count
-select
-     PostTags.TagId,
-     Count(*)
- from Posts
-     inner join PostTags on PostTags.PostId = Posts.Id   
- where  Posts.ParentId is null
-   and Posts.CreationDate&gt;=@startTime
-   and Posts.CreationDate&lt;@endTime
- group by PostTags.TagId
 </code></pre><ul>
 <li><p>Tags of a post: for a given post, we compute the number of tags, the frequency of the most popular post&#39;s tag, and the total number of posts which have at least on tag in common with the given post (incurs overcounting).</p>
 <pre><code>create table #Total_Tags_Count (postId int, numTags int, maxTagCount int, totalTagCount int)
